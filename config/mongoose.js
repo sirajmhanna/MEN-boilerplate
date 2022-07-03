@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Logger } = require("../helpers/logger");
 
 const mongoURI = process.env.MONGODB_URL;
 const options = {
