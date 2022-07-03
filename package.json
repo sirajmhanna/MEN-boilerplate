@@ -1,0 +1,29 @@
+{
+  "name": "men-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sirajmhanna/MEN-boilerplate.git"
+  },
+  "author": "sirajmhanna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sirajmhanna/MEN-boilerplate/issues"
+  },
+  "homepage": "https://github.com/sirajmhanna/MEN-boilerplate#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.18"
+  }
+}
