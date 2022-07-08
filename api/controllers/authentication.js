@@ -1,43 +1,50 @@
 const { Logger } = require("../../helpers/logger");
 const User = require("../models/User");
-const passwordHelpers = require("../../helpers/password");
+const CommonResponses = require("../../helpers/common-responses");
 
 exports.register = async (req, res) => {
   const logger = new Logger(req.requestID, "authentication", "register");
   let session;
   try {
-    // hash password
-    const passwordHash = await passwordHelpers.hash(req.body.password);
+    // check if email exists
+    const isEmailExists = await User.getUserByEmail(req.body.email);
+
+    if (isEmailExists) {
+      return res.status(409).json({
+        ...CommonResponses.emailExists,
+        data: {
+          email: req.body.email,
+        },
+      });
+    }
 
     // start transaction
     session = await User.startSession();
     await session.startTransaction();
 
     // add user
-    const userObject = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      phoneNumber: req.body.phoneNumber,
-      password: passwordHash,
-      userType: "user",
-    });
-    const user = await userObject.save({ session });
+    const user = await User.createUser(
+      req.body.firstName,
+      req.body.lastName,
+      req.body.email,
+      req.body.phone,
+      req.body.password,
+      "user",
+      session
+    );
 
     // commit transaction
     await session.commitTransaction();
     await session.endSession();
 
     return res.status(201).json({
-      status: "success",
-      code: 201,
-      message: "User registered successfully",
+      ...CommonResponses.successUserRegister,
       data: {
         user: {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          phoneNumber: user.phoneNumber,
+          phone: user.phone,
           userType: user.userType,
         },
       },
@@ -49,10 +56,6 @@ exports.register = async (req, res) => {
       await session.endSession();
     }
 
-    return res.status(500).json({
-      status: "fail",
-      code: 500,
-      message: "Server error",
-    });
+    return res.status(500).json(CommonResponses.serverError);
   }
 };

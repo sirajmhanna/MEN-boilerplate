@@ -3,21 +3,15 @@ const winston = require("winston");
 const loggerConfiguration = {
   transports: [
     new winston.transports.Console({
-      // or File
       level: "warn",
-      filename: "logging/warn.log",
       format: winston.format.combine(winston.format.json()),
     }),
     new winston.transports.Console({
-      // or File
       level: "error",
-      filename: "logging/error.log",
       format: winston.format.combine(winston.format.json()),
     }),
     new winston.transports.Console({
-      // or File
       level: "info",
-      filename: "logging/all.log",
       format: winston.format.combine(winston.format.json()),
     }),
   ],

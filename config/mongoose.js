@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Logger } = require("../helpers/logger");
+const logger = new Logger(new Date().getTime(), "config", "mongoose");
 
 const mongoURI = process.env.MONGODB_URL;
 const options = {
@@ -9,7 +10,7 @@ const options = {
 
 try {
   mongoose.connect(mongoURI, options);
-  console.log("mongoDB connected successfully");
+  logger.info("MongoDB connected successfully", {});
 } catch (error) {
-  console.log(error);
+  logger.error("Database connection error", { error: error.toString() });
 }
