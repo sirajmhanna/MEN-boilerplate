@@ -5,7 +5,7 @@ module.exports = {
     message: "Server error, please try again later",
   },
   emailExists: {
-    status: "fail",
+    status: "warn",
     code: 409,
     message: "Email address already exists",
   },
