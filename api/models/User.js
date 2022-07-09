@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNumber: {
+    phone: {
       type: String,
       required: false,
     },
@@ -43,7 +43,7 @@ User.createUser = async (
   firstName,
   lastName,
   email,
-  phoneNumber,
+  phone,
   password,
   userType,
   session
@@ -53,7 +53,7 @@ User.createUser = async (
       firstName,
       lastName,
       email,
-      phoneNumber,
+      phone,
       password: await passwordHelpers.hash(password),
       userType,
     });
