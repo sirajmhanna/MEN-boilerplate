@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const passwordHelpers = require("../../helpers/password");
 
 const UserSchema = new mongoose.Schema(
@@ -28,6 +29,7 @@ const UserSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    tokens: [{ type: Schema.Types.ObjectId, ref: "Token" }],
     deletedAt: {
       type: Date,
       require: false,
@@ -37,7 +39,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("users", UserSchema);
+const User = mongoose.model("User", UserSchema, "user");
 
 User.createUser = async (
   firstName,
