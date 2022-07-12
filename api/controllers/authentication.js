@@ -1,11 +1,40 @@
 const { Logger } = require("../../helpers/logger");
 const User = require("../models/User");
 const CommonResponses = require("../../helpers/common-responses");
+const Token = require("../models/Token");
 
 exports.register = async (req, res) => {
   const logger = new Logger(req.requestID, "authentication", "register");
   let session;
   try {
+    // const token = new Token({
+    //   user_id: "62c9791c9a5f944b28fdd2b7",
+    //   token: "12345678",
+    //   expiresAt: new Date().toISOString(),
+    //   isBlacklisted: false,
+    // });
+
+    // const t = await token.save();
+
+    // return res.status(201).json({
+    //   message: "good",
+    //   t,
+    // });
+
+    const u = await User.find().populate("tokens");
+
+    const t = await Token.find().populate("user_id");
+
+    const mongoose = require("mongoose");
+    const Schema = mongoose.Schema;
+
+    return res.status(201).json({
+      message: "good",
+      u,
+      t,
+      ID: mongoose.Types.ObjectId()
+    });
+
     logger.info("Fetching user by email", { email: req.body.email });
     const isEmailExists = await User.getUserByEmail(req.body.email);
 
