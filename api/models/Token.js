@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const User = require("./User");
 
 const TokenSchema = new mongoose.Schema(
   {
@@ -29,6 +30,13 @@ const TokenSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+TokenSchema.post("save", async (doc) => {
+  await User.findOneAndUpdate(
+    { _id: doc.user_id },
+    { $push: { tokens: doc._id } }
+  );
+});
 
 const Token = mongoose.model("Token", TokenSchema, "token");
 
