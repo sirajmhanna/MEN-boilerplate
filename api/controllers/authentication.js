@@ -8,7 +8,7 @@ exports.register = async (req, res) => {
   let session;
   try {
     // const token = new Token({
-    //   user_id: "62c9791c9a5f944b28fdd2b7",
+    //   user_id: "62e25b4fb99c6211d609beb6",
     //   token: "12345678",
     //   expiresAt: new Date().toISOString(),
     //   isBlacklisted: false,
@@ -21,19 +21,16 @@ exports.register = async (req, res) => {
     //   t,
     // });
 
-    const u = await User.find().populate("tokens");
+    // update user and add the token ID
 
-    const t = await Token.find().populate("user_id");
 
-    const mongoose = require("mongoose");
-    const Schema = mongoose.Schema;
 
-    return res.status(201).json({
-      message: "good",
-      u,
-      t,
-      ID: mongoose.Types.ObjectId()
-    });
+    // const u = await User.find().populate("tokens");
+
+    // return res.status(201).json({
+    //   message: "good",
+    //   u,
+    // });
 
     logger.info("Fetching user by email", { email: req.body.email });
     const isEmailExists = await User.getUserByEmail(req.body.email);
