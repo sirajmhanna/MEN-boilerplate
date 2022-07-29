@@ -17,6 +17,11 @@ module.exports = {
   invalidLoginCredentialsResponse: {
     status: "warn",
     code: 403,
-    message: "invalidLoginCredentials",
+    message: "Invalid login credentials",
+  },
+  accountLocked: {
+    status: "warn",
+    code: 403,
+    message: "Account is locked",
   },
 };
