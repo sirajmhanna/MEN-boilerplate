@@ -13,4 +13,12 @@ route.post(
   AuthenticationControllers.register
 );
 
+// Login Route
+route.post(
+  "/login",
+  generateRequestIdentifier,
+  joiMiddleware.validate(joiAuthenticationSchemas.loginSchema),
+  AuthenticationControllers.login
+);
+
 module.exports = route;
