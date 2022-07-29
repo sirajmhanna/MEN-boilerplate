@@ -14,4 +14,9 @@ module.exports = {
     code: 201,
     message: "User registered successfully",
   },
+  invalidLoginCredentialsResponse: {
+    status: "warn",
+    code: 403,
+    message: "invalidLoginCredentials",
+  },
 };
