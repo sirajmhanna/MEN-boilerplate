@@ -69,7 +69,6 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const logger = new Logger(req.requestID, "authentication", "login");
-  let session;
   try {
     logger.info("Fetching user by email", { email: req.body.email });
     const user = await User.getUserByEmail(req.body.email);
@@ -81,6 +80,11 @@ exports.login = async (req, res) => {
         .json(CommonResponses.invalidLoginCredentialsResponse);
     }
 
+    if (user.isLocked) {
+      logger.warn("User account is locked", { _id: user._id });
+      return res.status(403).json(CommonResponses.accountLocked);
+    }
+
     logger.info("Comparing password", { _id: user._id });
     const comparePassword = await passwordHelpers.compare(
       req.body.password,
@@ -88,11 +92,8 @@ exports.login = async (req, res) => {
     );
 
     if (!comparePassword) {
-      // edit user schema
-      // add failed login attempts count
-      // add isLocked
-      // increment failed login attempts count
-      // lock account if attempts count > than allowed
+      logger.warn("Incrementing failed login attempts", { _id: user._id });
+      await User.incrementFailedLoginAttempts(user._id);
 
       logger.warn("Wrong password", { _id: user._id });
       return res
@@ -104,6 +105,7 @@ exports.login = async (req, res) => {
     const tokenPromises = await Promise.all([
       tokenHelpers.generateAccessToken({ _id: user._id }),
       tokenHelpers.generateRefreshToken({ _id: user._id }),
+      user.preLockCount !== 0 ? User.resetFailedLoginAttempts(user._id) : null,
     ]);
 
     const tokens = {
