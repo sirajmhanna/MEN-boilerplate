@@ -24,9 +24,17 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    preLockCount: {
+      type: Number,
+      default: 0,
+    },
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
     userType: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["admin", "user"],
       default: "user",
     },
     tokens: [{ type: Schema.Types.ObjectId, ref: "Token" }],
@@ -69,6 +77,32 @@ User.createUser = async (
 User.getUserByEmail = (email) => {
   try {
     return User.findOne({ email, deletedAt: null });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+User.incrementFailedLoginAttempts = async (id) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { $inc: { preLockCount: 1 } },
+      {
+        new: true,
+      }
+    );
+
+    if (user.preLockCount >= process.env.NUMBER_OF_ALLOWED_FAILED_ATTEMPTS) {
+      await User.findOneAndUpdate({ _id: id }, { isLocked: true });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+User.resetFailedLoginAttempts = async (id) => {
+  try {
+    await User.findOneAndUpdate({ _id: id }, { preLockCount: 0 });
   } catch (error) {
     throw new Error(error);
   }
